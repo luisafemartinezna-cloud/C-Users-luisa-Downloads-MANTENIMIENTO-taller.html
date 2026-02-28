@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiencia Completa Neuromarketing PRO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  color:white;
+  overflow:hidden;
+  text-align:center;
+}
+#pantalla{
+  height:100vh;
+  width:100vw;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+.contenedor{
+  display:flex;
+  width:95%;
+  height:200px;
+  justify-content:center;
+  align-items:center;
+  gap:40px;
+  font-size:150px;
+}
+.botones{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+button{
+  padding:15px;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(45deg,#ff8c00,#ff0055);
+  color:white;
+  cursor:pointer;
+  transition:0.4s;
+  font-weight:bold;
+}
+button:hover{transform:scale(1.05);}
+.overlay{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+.muñeco{font-size:60px;}
+.mover{transition:left 0.5s;}
+#carrera{
+  position:relative;
+  width:90%;
+  height:120px;
+  border-top:4px solid white;
+  border-bottom:4px solid white;
+  margin-bottom:20px;
+  overflow:hidden;
+  background:linear-gradient(to right,#444,#111);
+  border-radius:15px;
+}
+.jugador{
+  position:absolute;
+  bottom:20px;
+  font-size:50px;
+}
+.tabla-juego{
+  width:40%;
+  margin:10px;
+  display:inline-block;
+  vertical-align:top;
+  border-collapse:collapse;
+  background:rgba(255,255,255,0.05);
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.5);
+}
+.tabla-juego td, .tabla-juego th{
+  padding:12px;
+  text-align:center;
+}
+.jugador-nombre{
+  font-size:20px;
+  margin-bottom:5px;
+  display:block;
+}
+.temporizador{
+  margin-top:10px;
+  font-size:24px;
+  font-weight:bold;
+  color:#FFD700;
+}
+.temporizador.alerta{
+  animation: parpadeo 1s infinite;
+  color:red;
+}
+@keyframes parpadeo{
+  0%,50%,100%{opacity:1;}
+  25%,75%{opacity:0;}
+}
+.correcto{background:green !important;color:white;}
+.incorrecto{background:red !important;color:white;}
+</style>
+</head>
+<body>
+
+<div id="pantalla">
+  <h1>🚀 Bienvenido al Taller de Neuromarketing</h1>
+  <div class="muñeco mover">🧠</div>
+  <button onclick="iniciarTaller()">Comenzar</button>
+</div>
+
+<script>
+/* ================= TALLER ================= */
+const preguntas=[
+  "¿Qué es el neuromarketing?",
+  "¿Qué cerebro decide por instinto y cómo influye en las decisiones de compra?",
+  "¿Qué parte del cerebro controla emociones y cómo se relaciona con el marketing?",
+  "¿Qué factores generan urgencia en los consumidores?",
+  "¿Qué influye más en la decisión de compra: emoción o lógica?",
+  "¿Por qué funcionan las historias en marketing?",
+  "¿Qué efecto tiene el color rojo en promociones y ventas?",
+  "¿Cómo afecta la percepción de escasez en la conducta de compra?",
+  "¿Cómo influye la música en la experiencia de compra?",
+  "¿Por qué es importante generar emociones en la publicidad?"
+];
+
+const respuestas=[
+  "El neuromarketing estudia cómo el cerebro responde a estímulos de marketing y publicidad, integrando neurociencia y psicología para entender la toma de decisiones.",
+  "El cerebro reptiliano es responsable de decisiones instintivas relacionadas con supervivencia y reacción rápida. En marketing, esto significa que promociones que apelan a instintos básicos son más efectivas.",
+  "El sistema límbico controla emociones y motivaciones. Las campañas que generan emociones fuertes activan esta área, aumentando conexión con la marca.",
+  "Factores como la escasez, urgencia temporal y ofertas limitadas generan un sentido de urgencia y compras impulsivas.",
+  "La emoción suele tener mayor influencia que la lógica en la mayoría de decisiones de compra.",
+  "Las historias conectan emocionalmente con los consumidores, facilitando identificación y recordación de la marca.",
+  "El color rojo atrae atención, genera urgencia y aumenta probabilidad de acción rápida en promociones.",
+  "La escasez activa valor percibido y miedo a perder la oportunidad, aumentando la probabilidad de compra.",
+  "La música influye en estado de ánimo, percepción del tiempo y comportamiento de compra.",
+  "Generar emociones permite que los consumidores recuerden la marca y se sientan motivados a actuar."
+];
+
+// Muñecos/pistas para cada pregunta
+const muñecos = ["🧠","🐍","💖","⏰","❤️","📖","🔴","🏷️","🎵","😊"];
+
+let actual=0;
+function iniciarTaller(){cargarPregunta();}
+function cargarPregunta(){
+  document.getElementById("pantalla").innerHTML=`
+  <h2>${preguntas[actual]}</h2>
+  <div class="contenedor">
+    <div>${muñecos[actual]}</div>
+    <div class="botones">
+      <button onclick="mostrarRespuesta()">Ver Respuesta</button>
+      <button onclick="siguiente()">Siguiente</button>
+    </div>
+  </div>`;
+}
+function mostrarRespuesta(){
+  const overlay=document.createElement("div");
+  overlay.className="overlay";
+  overlay.innerHTML=`<div class="muñeco mover">🤔</div><h1>Pensando...</h1>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>{
+    overlay.innerHTML=`<h1 style="max-width:900px;">${respuestas[actual]}</h1>
+    <div class="muñeco mover">🎉</div>
+    <h1>¡Excelente!</h1>`;
+  },2000);
+  setTimeout(()=>overlay.remove(),7000);
+}
+function siguiente(){
+  actual++;
+  if(actual<preguntas.length)cargarPregunta();
+  else mostrarIntroJuego();
+}
+
+/* ================= INTRODUCCION AL JUEGO ================= */
+function mostrarIntroJuego(){
+  document.getElementById("pantalla").innerHTML=`
+  <h1>🎮 Introducción al Juego</h1>
+  <p>Se mostrará una pregunta de neuromarketing con 4 opciones por jugador.</p>
+  <p>Cada jugador tiene 20 segundos para responder.</p>
+  <p>Si aciertas, tu muñeco avanza. Cada pregunta vale 100 puntos.</p>
+  <button onclick="iniciarCuenta()">¡Siguiente y Comenzar!</button>`;
+}
+
+/* ================= JUEGO ================= */
+let pos1=40,pos2=40;
+let puntos1=0,puntos2=0;
+let preguntaActual=0;
+let respuestasJugadores=[null,null];
+let responded=[false,false];
+let tiempo=20,intervaloTiempo;
+
+const preguntasJuego=[
+  {q:"¿Qué parte del cerebro controla emociones?",op:["Sistema límbico","Corteza motora","Cerebelo","Hipotálamo"],correcta:0},
+  {q:"¿Qué genera urgencia en las compras?",op:["Escasez","Silencio","Publicidad lenta","Confusión"],correcta:0},
+  {q:"¿Qué influye más en la decisión de compra?",op:["Emoción","Azar","Precio","Moda"],correcta:0},
+  {q:"¿Por qué funcionan las historias en marketing?",op:["Activan emociones","Son aburridas","No funcionan","Distracción"],correcta:0},
+  {q:"¿Qué provoca el color rojo en promociones?",op:["Llama atención","Relaja","Ignora","Desanima"],correcta:0}
+];
+
+function iniciarCuenta(){
+  let c=3;
+  document.getElementById("pantalla").innerHTML=`<h1 style="font-size:120px">${c}</h1>`;
+  let inter=setInterval(()=>{
+    c--;
+    if(c>0)document.getElementById("pantalla").innerHTML=`<h1 style="font-size:120px">${c}</h1>`;
+    else if(c===0)document.getElementById("pantalla").innerHTML=`<h1 style="font-size:120px">¡YA!</h1>`;
+    else{clearInterval(inter); mostrarPreguntaJuego();}
+  },1000);
+}
+
+function mostrarPreguntaJuego(){
+  tiempo=20;
+  respuestasJugadores=[null,null];
+  responded=[false,false];
+  let p=preguntasJuego[preguntaActual];
+
+  // Mezclar opciones
+  let opciones=p.op.map((o,i)=>({texto:o,indice:i}));
+  opciones.sort(()=>Math.random()-0.5);
+  let nuevaCorrecta=opciones.findIndex(o=>o.indice===p.correcta);
+  p.op=opciones.map(o=>o.texto);
+  p.correcta=nuevaCorrecta;
+
+  let html=`<div id="carrera">
+    <div id="jugador1" class="jugador" style="left:${pos1}px">🧠</div>
+    <div id="jugador2" class="jugador" style="left:${pos2}px">💡</div>
+  </div>
+  <h2>${p.q}</h2>
+  <div style="display:flex;justify-content:space-around;width:100%;">
+  <table class="tabla-juego">
+    <tr><th><span class="jugador-nombre">Jugador 1</span></th></tr>`;
+  for(let i=0;i<4;i++){
+    html+=`<tr><td><button id="j1b${i}" onclick="responderJugador(1,${i})">${p.op[i]}</button></td></tr>`;
+  }
+  html+=`</table>
+  <table class="tabla-juego">
+    <tr><th><span class="jugador-nombre">Jugador 2</span></th></tr>`;
+  for(let i=0;i<4;i++){
+    html+=`<tr><td><button id="j2b${i}" onclick="responderJugador(2,${i})">${p.op[i]}</button></td></tr>`;
+  }
+  html+=`</table></div>
+  <div class="temporizador" id="temporizador">Tiempo: ${tiempo}</div>
+  <div style="margin-top:10px;font-size:18px;">Puntajes: Jugador1 ${puntos1} | Jugador2 ${puntos2}</div>`;
+  document.getElementById("pantalla").innerHTML=html;
+
+  intervaloTiempo=setInterval(()=>{
+    tiempo--;
+    const t=document.getElementById("temporizador");
+    t.innerText="Tiempo: "+tiempo;
+    if(tiempo<=5) t.classList.add("alerta");
+    if(tiempo<=0){clearInterval(intervaloTiempo); mostrarResultados();}
+  },1000);
+}
+
+function responderJugador(jugador,opcion){
+  if(responded[jugador-1]) return; 
+  responded[jugador-1]=true;
+  respuestasJugadores[jugador-1]=opcion;
+
+  if(responded.every(r=>r)){clearInterval(intervaloTiempo); mostrarResultados();}
+}
+
+function mostrarResultados(){
+  const p=preguntasJuego[preguntaActual];
+  const tablas=document.querySelectorAll(".tabla-juego");
+  [0,1].forEach(j=>{
+    const botones=tablas[j].querySelectorAll("button");
+    botones.forEach((btn,i)=>{
+      btn.disabled=true;
+      if(i===p.correcta) btn.classList.add("correcto");
+      else if(respuestasJugadores[j]===i) btn.classList.add("incorrecto");
+    });
+    if(respuestasJugadores[j]===p.correcta){
+      if(j===0){puntos1+=100; pos1+=60;}
+      else{puntos2+=100; pos2+=60;}
+    }
+  });
+  document.getElementById("jugador1").style.left=pos1+"px";
+  document.getElementById("jugador2").style.left=pos2+"px";
+
+  setTimeout(()=>{
+    preguntaActual++;
+    if(preguntaActual<preguntasJuego.length) mostrarPreguntaJuego();
+    else finalizarJuego();
+  },3000);
+}
+
+function finalizarJuego(){
+  document.getElementById("pantalla").innerHTML=`<h1>🏆 Juego Finalizado</h1>
+  <h2>Jugador 1: ${puntos1} pts</h2>
+  <h2>Jugador 2: ${puntos2} pts</h2>
+  <h1>${puntos1>puntos2?"Jugador 1 GANA!":puntos2>puntos1?"Jugador 2 GANA!":"EMPATE!"}</h1>
+  <button onclick="location.reload()">Reiniciar</button>`;
+}
+</script>
+</body>
+</html>
